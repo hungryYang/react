@@ -2,6 +2,7 @@
   "name": "todolist",
   "version": "0.1.0",
   "private": true,
+  "homepage":" https://hungryyang.github.io/react/todolist/build",
   "dependencies": {
     "normalize.css": "^6.0.0",
     "react": "^15.5.4",
