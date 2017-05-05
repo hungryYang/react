@@ -4,75 +4,59 @@ import ReactDom from 'react-dom'
 import './app.css'
 const SubMenu = Menu.SubMenu;
 
-class Sider extends React.Component {
-  state = {
-    current: '1',
-    openKeys: [],
-  }
-  handleClick = (e) => {
-    console.log('Clicked: ', e);
-    this.setState({ current: e.key });
-  }
-  onOpenChange = (openKeys) => {
-    const state = this.state;
-    const latestOpenKey = openKeys.find(key => !(state.openKeys.indexOf(key) > -1));
-    const latestCloseKey = state.openKeys.find(key => !(openKeys.indexOf(key) > -1));
-
-    let nextOpenKeys = [];
-    if (latestOpenKey) {
-      nextOpenKeys = this.getAncestorKeys(latestOpenKey).concat(latestOpenKey);
-    }
-    if (latestCloseKey) {
-      nextOpenKeys = this.getAncestorKeys(latestCloseKey);
-    }
-    this.setState({ openKeys: nextOpenKeys });
-  }
-  getAncestorKeys = (key) => {
-    const map = {
-      sub3: ['sub2'],
-    };
-    return map[key] || [];
-  }
-  render() {
-    let recipesitem = this.props.recipesitem
-    let keyvalue = this.props.keyvalue
-    var items = []
-    for (let i=0;i<recipesitem['content'].length;i++){
-        items.push(
-             <Menu.Item key={keyvalue+recipesitem['content'][i]}>{recipesitem['content'][i]}</Menu.Item>
-        )
-    }
-    console.log(items)
-    return (
-      <Menu
-        mode="inline"
-        openKeys={this.state.openKeys}
-        selectedKeys={[this.state.current]}
-        style={{ width: 240 }}
-        onOpenChange={this.onOpenChange}
-        onClick={this.handleClick}
-      >
-        <SubMenu key={recipesitem['title']} title={recipesitem['title']}>
-         {items}
-        </SubMenu>
-      </Menu>
-    );
-  }
-}
-
-
 class Box extends Component {
-    render(){
-        let items = []
-        let recipes = this.props.recipes
-        for(let i=0;i<recipes.length;i++){
-            items.push(<Sider key={`sider${i}`} keyvalue={i} recipesitem={recipes[i]}/>  )
-        }
-        return (
-            <div>
-             {items} 
-            </div>
-        )      
+    state = {
+      current: '1',
+      openKeys: [],
+    }
+    handleClick = (e) => {
+      console.log('Clicked: ', e);
+      this.setState({ current: e.key });
+    }
+    onOpenChange = (openKeys) => {
+      const state = this.state;
+      const latestOpenKey = openKeys.find(key => !(state.openKeys.indexOf(key) > -1));
+      const latestCloseKey = state.openKeys.find(key => !(openKeys.indexOf(key) > -1));
+
+      let nextOpenKeys = [];
+      if (latestOpenKey) {
+        nextOpenKeys = this.getAncestorKeys(latestOpenKey).concat(latestOpenKey);
+      }
+      if (latestCloseKey) {
+        nextOpenKeys = this.getAncestorKeys(latestCloseKey);
+      }
+      this.setState({ openKeys: nextOpenKeys });
+    }
+    getAncestorKeys = (key) => {
+      const map = {
+        sub3: ['sub2'],
+      };
+      return map[key] || [];
+    }
+    render() {
+      let recipes = this.props.recipes
+      return (
+        <Menu
+          mode="inline"
+          openKeys={this.state.openKeys}
+          selectedKeys={[this.state.current]}
+          style={{ width: 240 }}
+          onOpenChange={this.onOpenChange}
+          onClick={this.handleClick}
+        >
+          {
+            recipes.map(function(item,index){
+              let menuItem = []
+              for(var i=0;i<item.content.length;i++){
+                menuItem.push(
+                  <Menu.Item key={index+item['content'][i]}>{item['content'][i]}</Menu.Item>
+                ) 
+              }
+              return <SubMenu key={`${item}${index}`} title={<span>{item.title}</span>}>{menuItem}</SubMenu>
+            })
+          }
+        </Menu>
+      )
     }
 }
 
@@ -91,7 +75,6 @@ class Dialog extends Component {
     var input2 = document.getElementById('input2').value.split(',')
     this.props.recipes.push({title:input1,content:input2})
     this.setState({  visible: false});
-    console.log(this.props.recipes)
     update(this.props.recipes)
   }
   handleCancel = () => {
