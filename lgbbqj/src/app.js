@@ -71,10 +71,32 @@ class Dialog extends Component {
     });
   }
   add = () => {
-    var input1 = document.getElementById('input1').value
-    var input2 = document.getElementById('input2').value.split(',')
-    this.props.recipes.push({title:input1,content:input2})
-    this.setState({  visible: false});
+    let input1 = document.getElementById('input1').value
+    let input2 = document.getElementById('input2').value.split(',')
+    let recipes = this.props.recipes
+    let newList = {title:input1,content:input2}
+    let flag = true
+    if(recipes.length===0){
+      this.props.recipes.push(newList)
+      this.setState({  
+        visible: false,
+      });
+      update(this.props.recipes)
+      return;
+    }else{
+      for(let i=0;i<recipes.length;i++){
+        if(recipes[i].title === input1){
+          Object.assign(this.props.recipes[i],newList)
+          flag = false
+          break;
+        }
+      }
+    }
+    if(flag)
+      this.props.recipes.push({title:input1,content:input2})
+    this.setState({  
+      visible: false,
+    });
     update(this.props.recipes)
   }
   handleCancel = () => {
@@ -121,7 +143,7 @@ class Body extends Component {
         return (
             <div>
                 <Box recipes={this.state.recipes}/>
-                <Dialog recipes={this.state.recipes}></Dialog>
+                <Dialog recipes={this.state.recipes} ></Dialog>
             </div>
         )
     }
