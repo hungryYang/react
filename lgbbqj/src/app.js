@@ -49,10 +49,12 @@ class Box extends Component {
               let menuItem = []
               for(var i=0;i<item.content.length;i++){
                 menuItem.push(
-                  <Menu.Item key={index+item['content'][i]}>{item['content'][i]}</Menu.Item>
+                  <Menu.Item key={i+item['content'][i]}>{item['content'][i]}</Menu.Item>
                 ) 
               }
-              return <SubMenu key={`${item}${index}`} title={<span>{item.title}</span>}>{menuItem}</SubMenu>
+              return <SubMenu  key={`${item}${index}`} title={<span>{item.title}</span>}>
+              {menuItem}
+              </SubMenu>
             })
           }
         </Menu>
